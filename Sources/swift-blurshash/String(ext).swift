@@ -36,6 +36,6 @@ private let decodeCharacters: [String: Int] = {
     return dict
 }()
 
-private let encodeCharacters: [String] = {
+let encodeCharacters: [String] = {
     return "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#$%*+,-.:;=?@[]^_{|}~".map { String($0) }
 }()
