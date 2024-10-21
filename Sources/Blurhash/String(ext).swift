@@ -10,6 +10,7 @@ extension String {
     }
 }
 
+// This extension shouldn't exist as using these in loop makes access operations quadratic
 extension String {
     subscript (offset: Int) -> Character {
         return self[index(startIndex, offsetBy: offset)]
@@ -28,6 +29,7 @@ extension String {
     }
 }
 
+// TODO: this should be [Character: Int]
 private let decodeCharacters: [String: Int] = {
     var dict: [String: Int] = [:]
     for (index, character) in encodeCharacters.enumerated() {
@@ -36,6 +38,7 @@ private let decodeCharacters: [String: Int] = {
     return dict
 }()
 
+// TODO: this should be [Character]
 let encodeCharacters: [String] = {
-    return "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#$%*+,-.:;=?@[]^_{|}~".map { String($0) }
+    return "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#$%*+,-.:;=?@[]^_{|}~".map(String.init)
 }()
