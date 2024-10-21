@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-import Blurhash
+@testable import Blurhash
 
 extension Bitmap {
 

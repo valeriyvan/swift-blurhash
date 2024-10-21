@@ -3,10 +3,10 @@ import Algorithms
 
 /// Helper for working with bitmap data.
 /// Pixels are ordered line by line, like arrays in C.
-public struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
+struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
 
     /// Creates useless empty bitmap.
-    public init() {
+    init() {
         width = 0
         height = 0
         backing = ContiguousArray<UInt8>()
@@ -17,7 +17,7 @@ public struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
     ///   - width: The width of the bitmap.
     ///   - height: The height of the bitmap.
     ///   - color: The starting color of the bitmap (RGBA format).
-    public init(width: Int, height: Int, color: Rgba) {
+    init(width: Int, height: Int, color: Rgba) {
         assert(width >= 0 && height >= 0)
         self.width = width
         self.height = height
@@ -42,7 +42,7 @@ public struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
     ///   - data: The byte data to fill the bitmap with, must be width * height * depth (4) long.
     ///   - blending: Background color to be blended. If nil, data provided is used as is.
     ///   If not nil,  background is blended into bitmap making it opaque (alpha 255), alpha of background itself is ignored.
-    public init(width: Int, height: Int, data: ContiguousArray<UInt8>, blending background: Rgba? = nil) {
+    init(width: Int, height: Int, data: ContiguousArray<UInt8>, blending background: Rgba? = nil) {
         assert(width > 0 && height > 0)
         assert(width * height * 4 == data.count)
         self.width = width
@@ -67,7 +67,7 @@ public struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
         }
     }
 
-    public init(width: Int, height: Int, data: Data, blending background: Rgba? = nil) {
+    init(width: Int, height: Int, data: Data, blending background: Rgba? = nil) {
         assert(width > 0 && height > 0)
         assert(width * height * 4 == data.count)
         self.width = width
@@ -92,11 +92,11 @@ public struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
         }
     }
 
-    public init(width: Int, height: Int, data: [UInt8], blending background: Rgba? = nil) {
+    init(width: Int, height: Int, data: [UInt8], blending background: Rgba? = nil) {
         self = Bitmap(width: width, height: height, data: ContiguousArray(data), blending: background)
     }
 
-    public init(width: Int, height: Int, initializer: (_: Int, _: Int) -> Rgba) {
+    init(width: Int, height: Int, initializer: (_: Int, _: Int) -> Rgba) {
         assert(width > 0 && height > 0)
         self.width = width
         self.height = height
@@ -117,48 +117,48 @@ public struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
     }
 
     /// Width of the bitmap.
-    public private(set) var width: Int
+    private(set) var width: Int
 
     @inlinable
     @inline(__always)
-    public var widthIndices: Range<Int> { 0..<width }
+    var widthIndices: Range<Int> { 0..<width }
 
     /// Height of the bitmap.
-    public private(set) var height: Int
+    private(set) var height: Int
 
     @inlinable
     @inline(__always)
-    public var heightIndices: Range<Int> { 0..<height }
+    var heightIndices: Range<Int> { 0..<height }
 
     @inlinable
     @inline(__always)
-    public var pixelCount: Int { width * height }
+    var pixelCount: Int { width * height }
 
     @inlinable
     @inline(__always)
-    public var componentCount: Int { pixelCount * 4 }
+    var componentCount: Int { pixelCount * 4 }
 
     /// Raw bitmap data.
-    public private(set) var backing: ContiguousArray<UInt8> // C ordering, row by row
+    private(set) var backing: ContiguousArray<UInt8> // C ordering, row by row
 
     /// Bitmap has no pixels.
     @inlinable
     @inline(__always)
-    public var isEmpty: Bool { width == 0 || height == 0 }
+    var isEmpty: Bool { width == 0 || height == 0 }
 
     @inlinable
     @inline(__always)
-    public func isInBounds(x: Int, y: Int) -> Bool {
+    func isInBounds(x: Int, y: Int) -> Bool {
         x >= 0 && x < width && y >= 0 && y < height
     }
 
     @inlinable
     @inline(__always)
-    public func isInBounds(_ point: Point<Int>) -> Bool {
+    func isInBounds(_ point: Point<Int>) -> Bool {
         point.x >= 0 && point.x < width && point.y >= 0 && point.y < height
     }
 
-    public subscript(x: Int, y: Int) -> Rgba {
+    subscript(x: Int, y: Int) -> Rgba {
         get {
             backing.withUnsafeBufferPointer {
                 let offset = offset(x: x, y: y)
@@ -177,7 +177,7 @@ public struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
         }
     }
 
-    public subscript(_ point: Point<Int>) -> Rgba {
+    subscript(_ point: Point<Int>) -> Rgba {
         get {
             self[point.x, point.y]
         }
@@ -188,7 +188,7 @@ public struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
 
     /// Fills the bitmap with the given color.
     /// - Parameter color: The color to fill the bitmap with.
-    public mutating func fill(color: Rgba) {
+    mutating func fill(color: Rgba) {
         let count = pixelCount
         backing.withUnsafeMutableBufferPointer {
             for index in 0 ..< count {
@@ -208,7 +208,7 @@ public struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
         return (width * y + x) * 4
     }
 
-    public mutating func addFrame(width inset: Int, color: Rgba) {
+    mutating func addFrame(width inset: Int, color: Rgba) {
         assert(inset >= 0)
         guard inset > 0 else { return }
         let newWidth = width + inset * 2
@@ -240,7 +240,7 @@ public struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
     }
 
     // Primitive downsample algorithm utilising Bitmap's averageColor function.
-    public func downsample(factor: Int) -> Bitmap {
+    func downsample(factor: Int) -> Bitmap {
         assert(factor > 0)
         guard factor > 1 else { return self }
         let downsampledWidth = width / factor
@@ -321,7 +321,7 @@ public struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
     }
 
     // https://home.jeita.or.jp/tsc/std-pdf/CP3451C.pdf, page 30
-    public enum ExifOrientation: Int {
+    enum ExifOrientation: Int {
         // 1 The Oth row is at the visual top of the image, and the 0th column is the visual left-hand side.
         case up = 1
         // 2 The Oth row is at the visual top of the image, and the Oth column is the visual right-hand side.
@@ -340,7 +340,7 @@ public struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
         case right = 8
     }
 
-    public mutating func rotateToUpOrientation(accordingTo orientation: ExifOrientation) {
+    mutating func rotateToUpOrientation(accordingTo orientation: ExifOrientation) {
         switch orientation {
         case .up:
             ()
@@ -363,7 +363,7 @@ public struct Bitmap: Sendable { // swiftlint:disable:this type_body_length
 }
 
 extension Bitmap: Equatable {
-    public static func == (lhs: Bitmap, rhs: Bitmap) -> Bool {
+    static func == (lhs: Bitmap, rhs: Bitmap) -> Bool {
         lhs.width == rhs.width && lhs.height == rhs.height && lhs.backing == rhs.backing
     }
 }
@@ -372,7 +372,7 @@ extension Bitmap {
 
     /// Computes the average RGB color of the pixels in the bitmap.
     /// - Returns: The average RGB color of the image, RGBA8888 format. Alpha is set to opaque (255).
-    public func averageColor() -> Rgba {
+    func averageColor() -> Rgba {
         // TODO: carefully check implementation for overflows.
         // TODO: make it internal
         guard !isEmpty else { return .black }
@@ -399,7 +399,7 @@ extension Bitmap {
 
     // Returns opaque (alpha 255) image with blended background.
     // Alpha of background itself is ignored.
-    public func blending(background: Rgba) -> Bitmap {
+    func blending(background: Rgba) -> Bitmap {
         Bitmap(width: width, height: height) { x, y in
             self[x, y].blending(background: background)
         }
@@ -409,7 +409,7 @@ extension Bitmap {
 
 extension Bitmap {
 
-    public enum ParsePpmError: Error {
+    enum ParsePpmError: Error {
         case noP3
         case inconsistentHeader(String)
         case maxElementNot255(String)
@@ -418,7 +418,7 @@ extension Bitmap {
     }
 
     // Format is described in https://en.wikipedia.org/wiki/Netpbm and https://netpbm.sourceforge.net/doc/ppm.html
-    public init(ppmString string: String) throws {
+    init(ppmString string: String) throws {
         var stringWithTrimmedComments = ""
         string.enumerateLines { line, _ in
             let endIndex = line.firstIndex(of: "#") ?? line.endIndex
@@ -472,7 +472,7 @@ extension Bitmap {
         }
     }
 
-    public func ppmString(background: Rgba = .white) -> String {
+    func ppmString(background: Rgba = .white) -> String {
         """
         P3
         \(width) \(height)
@@ -488,13 +488,13 @@ extension Bitmap {
             .joined()
     }
 
-    public var ppmString: String { ppmString() }
+    var ppmString: String { ppmString() }
 }
 
 extension Bitmap {
 
     // swiftlint:disable:next cyclomatic_complexity
-    public func compare(with other: Bitmap, precision: Double) -> Bool {
+    func compare(with other: Bitmap, precision: Double) -> Bool {
         guard width != 0 else { return false }
         guard other.width != 0 else { return false }
         guard width == other.width else { return false }
