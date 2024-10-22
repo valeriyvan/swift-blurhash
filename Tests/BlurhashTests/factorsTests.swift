@@ -115,3 +115,9 @@ func factorsTests(
     )
     pointer.deallocate()
 }
+
+extension RGBFloat: Equatable {
+    public static func == (lhs: RGBFloat, rhs: RGBFloat) -> Bool {
+        lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b
+    }
+}

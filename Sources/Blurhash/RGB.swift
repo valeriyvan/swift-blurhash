@@ -43,8 +43,6 @@ struct RGBFloat {
 
 }
 
-extension RGBFloat: Equatable {} // TODO: only tests need this
-
 extension [RGBFloat] {
     func hash(numberOfComponents components: (Int, Int)) -> String {
         let factors = self // FIX: !!!
