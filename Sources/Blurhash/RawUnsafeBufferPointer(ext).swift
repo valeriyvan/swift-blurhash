@@ -3,15 +3,14 @@ import Foundation
 public extension UnsafeRawBufferPointer {
 
     func blurHash(numberOfComponents components: (Int, Int), width: Int, height: Int, bytesPerRow: Int, bitsPerPixel: Int) -> String {
-        let factors = factors(
+        factors(
             numberOfComponents: components,
             width: width,
             height: height,
             bytesPerRow: bytesPerRow,
             bitsPerPixel: bitsPerPixel
         )
-        print(factors)
-        return factors.hash(numberOfComponents: components)
+        .hash(numberOfComponents: components)
     }
 
     internal func factors(
