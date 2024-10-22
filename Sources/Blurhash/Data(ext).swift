@@ -65,13 +65,10 @@ public extension Data {
                     }
                 }
 
-                let intR = UInt8(r.linearTosRGB())
-                let intG = UInt8(g.linearTosRGB())
-                let intB = UInt8(b.linearTosRGB())
-
-                pixels[3 * x + 0 + y * bytesPerRow] = intR
-                pixels[3 * x + 1 + y * bytesPerRow] = intG
-                pixels[3 * x + 2 + y * bytesPerRow] = intB
+                let offset = x * 3 + y * bytesPerRow
+                pixels[offset] = UInt8(r.linearTosRGB())
+                pixels[offset + 1] = UInt8(g.linearTosRGB())
+                pixels[offset + 2] = UInt8(b.linearTosRGB())
             }
         }
 
