@@ -2,7 +2,13 @@ import Foundation
 
 public extension Data {
 
-    func blurHash(numberOfComponents components: (Int, Int), width: Int, height: Int, bytesPerRow: Int, bitsPerPixel: Int) -> String {
+    func blurHash(
+        numberOfComponents components: (Int, Int),
+        width: Int,
+        height: Int,
+        bytesPerRow: Int,
+        bitsPerPixel: Int
+    ) -> String {
         self.withUnsafeBytes { buffer in
             buffer.blurHash(
                 numberOfComponents: components,
