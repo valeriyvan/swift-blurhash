@@ -86,29 +86,14 @@ import Testing
 )
 func blurhashTest(filename: String, factorsSample: [RGBFloat], hash hashSample: String) async throws {
     let b = try Bitmap(ppmBundleResource: filename, withExtension: "ppm")
-    print(filename)
-    print(b.width, b.height)
-    print(hashSample)
-    let (factors,hash) = b.backing.withUnsafeBytes {
-//        $0.blurHash(
-//            numberOfComponents: (4, 3),
-//            width: b.width,
-//            height: b.height,
-//            bytesPerRow: b.width * 4, // TODO: 4 bytes because Bitmap uses RGBA
-//            bitsPerPixel: 8 * 4       //
-//        )
-        let factors = $0.factors(
+    let hash = b.backing.withUnsafeBytes {
+        $0.blurHash(
             numberOfComponents: (4, 3),
             width: b.width,
             height: b.height,
             bytesPerRow: b.width * 4, // TODO: 4 bytes because Bitmap uses RGBA
             bitsPerPixel: 8 * 4       //
         )
-        let hash = factors.hash(numberOfComponents: (4,3))
-        return (factors,hash)
     }
-    print(hash)
-    //#expect(factors == factorsSample)
-
     #expect(hash == hashSample)
 }
