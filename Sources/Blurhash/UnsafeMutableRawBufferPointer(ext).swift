@@ -2,6 +2,7 @@ import Foundation
 
 public extension UnsafeMutableRawBufferPointer {
 
+    // This initializer exists because implementation of same initializer in Data needs it.
     // Don't forget deallocate created buffer.
     init?(blurhash: String, width: Int, height: Int, punch: Float = 1) {
         let blurHashCharacters: [Character] = Array(blurhash)
