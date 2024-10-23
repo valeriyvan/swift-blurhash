@@ -13,6 +13,18 @@ public extension UnsafeRawBufferPointer {
         .hash(numberOfComponents: components)
     }
 
+    // Don't forget deallocate created buffer.
+    init?(blurhash: String, width: Int, height: Int, punch: Float = 1) {
+        let mutableRawBuffer = UnsafeMutableRawBufferPointer(
+            blurhash: blurhash,
+            width: width,
+            height: height,
+            punch: punch
+        )
+        guard let mutableRawBuffer else { return nil }
+        self.init(mutableRawBuffer)
+    }
+
     internal func factors(
         numberOfComponents components: (Int, Int),
         width: Int,
@@ -42,18 +54,6 @@ public extension UnsafeRawBufferPointer {
             }
         }
         return factors
-    }
-
-    // Don't forget deallocate created buffer.
-    init?(blurhash: String, width: Int, height: Int, punch: Float = 1) {
-        let mutableRawBuffer = UnsafeMutableRawBufferPointer(
-            blurhash: blurhash,
-            width: width,
-            height: height,
-            punch: punch
-        )
-        guard let mutableRawBuffer else { return nil }
-        self.init(mutableRawBuffer)
     }
 
 }
