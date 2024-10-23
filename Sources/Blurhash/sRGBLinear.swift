@@ -2,7 +2,7 @@ import Foundation
 
 extension Float {
     // Converts from linear color space to sRGB
-    func linearTosRGB() -> Int {
+    func linearTosRGB() -> UInt8 {
         let v = self.clamped(to: 0...1)
         let transformed: Self
         // 0.0031308 represents the point where the sRGB transfer function transitions from
@@ -15,11 +15,11 @@ extension Float {
             transformed = 1.055 * pow(v, 1 / 2.4) - 0.055
         }
         // Scale result to 0...255 range and round to the nearest integer
-        return  Int(transformed * 255 + 0.5)
+        return  UInt8(transformed * 255 + 0.5)
     }
 }
 
-extension BinaryInteger {
+extension UInt8 {
     // Converts from sRGB color space to linear
     func sRGBToLinear() -> Float {
         // Convert self which is supposed to be in 0...255 range to 0.0...1.0 range
