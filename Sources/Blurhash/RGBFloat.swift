@@ -14,24 +14,25 @@ struct RGBFloat {
         let roundedR = r.linearTosRGB()
         let roundedG = g.linearTosRGB()
         let roundedB = b.linearTosRGB()
-        return (roundedR << 16) + (roundedG << 8) + roundedB
+        return (Int(roundedR) << 16) | (Int(roundedG) << 8) | Int(roundedB)
     }
 
     init(decodingDC value: Int) {
-        r = (value >> 16).sRGBToLinear()
-        g = ((value >> 8) & 255).sRGBToLinear()
-        b = (value & 255).sRGBToLinear()
+        r = UInt8((value >> 16) & 255).sRGBToLinear()
+        g = UInt8((value >> 8) & 255).sRGBToLinear()
+        b = UInt8(value & 255).sRGBToLinear()
     }
 
     // AC stands for alternating current or AC coefficient
     func encodeAC(maximumValue: Float) -> Int {
-        let quantR = Int(max(0, min(18, floor(signPow(r / maximumValue, 0.5) * 9 + 9.5))))
-        let quantG = Int(max(0, min(18, floor(signPow(g / maximumValue, 0.5) * 9 + 9.5))))
-        let quantB = Int(max(0, min(18, floor(signPow(b / maximumValue, 0.5) * 9 + 9.5))))
+        let quantR = Int(floor(signPow(r / maximumValue, 0.5) * 9 + 9.5).clamped(to: 0.0...18.0))
+        let quantG = Int(floor(signPow(g / maximumValue, 0.5) * 9 + 9.5).clamped(to: 0.0...18.0))
+        let quantB = Int(floor(signPow(b / maximumValue, 0.5) * 9 + 9.5).clamped(to: 0.0...18.0))
         return quantR * 19 * 19 + quantG * 19 + quantB
     }
 
-    // Decodes the AC (Alternating Current) components, which represent the higher frequency details of the image.
+    // Decodes the AC (Alternating Current) components,
+    // which represents the higher frequency details of the image.
     init(decodingAC value: Int, maximumValue: Float) {
         let quantR = value / (19 * 19)
         let quantG = (value / 19) % 19
@@ -44,6 +45,7 @@ struct RGBFloat {
 }
 
 extension [RGBFloat] {
+
     func hash(numberOfComponents components: (Int, Int)) -> String {
         let factors = self // FIX: !!!
         let dc = factors.first!
